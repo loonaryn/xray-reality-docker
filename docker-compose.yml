@@ -1,0 +1,20 @@
+services:
+  xray:
+    image: ghcr.io/xtls/xray-core:${XRAY_VERSION:-26.7.28}
+    container_name: xray-reality
+    restart: unless-stopped
+    command: ["run", "-c", "/etc/xray/config.json"]
+    ports:
+      - "443:443/tcp"
+    volumes:
+      - ./config/config.json:/etc/xray/config.json:ro
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
